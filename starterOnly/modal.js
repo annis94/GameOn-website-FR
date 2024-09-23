@@ -41,51 +41,88 @@ form.addEventListener("submit", function(event) {
 
 
 function validate() {
-  // Récupération des valeurs des champs
-  const firstName = document.getElementById('first').value.trim();
-  const lastName = document.getElementById('last').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const birthdate = document.getElementById('birthdate').value.trim();
+  let isValid = true;
 
-  // Vérification que le prénom a au moins 2 caractères
+  // Récupération des éléments des champs
+  const firstNameElement = document.getElementById('first');
+  const lastNameElement = document.getElementById('last');
+  const emailElement = document.getElementById('email');
+  const birthdateElement = document.getElementById('birthdate');
+  const quantityElement = document.getElementById('quantity');
+  const termsElement = document.getElementById('checkbox1');
+
+  // Réinitialisation des messages d'erreur
+  document.querySelectorAll('.formData').forEach((el) => {
+    el.setAttribute('data-error', '');
+    el.setAttribute('data-error-visible', 'false');
+  });
+
+  // Vérification du prénom
+  const firstName = firstNameElement.value.trim();
   if (!firstName || firstName.length < 2) {
-    alert('Le prénom doit avoir au moins 2 caractères.'); // Affiche une alerte si le prénom est trop court
-    return false; // Empêche l'envoi du formulaire
-  }
-  
-  // Vérification des autres champs...
-  if (!lastName || lastName.length < 2) {
-    alert('Le nom de famille doit avoir au moins 2 caractères.');
-    return false;
+    const formData = firstNameElement.closest('.formData');
+    formData.setAttribute('data-error', 'Le prénom doit avoir au moins 2 caractères.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
   }
 
+  // Vérification du nom
+  const lastName = lastNameElement.value.trim();
+  if (!lastName || lastName.length < 2) {
+    const formData = lastNameElement.closest('.formData');
+    formData.setAttribute('data-error', 'Le nom doit avoir au moins 2 caractères.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
+  }
+
+  // Vérification de l'email
+  const email = emailElement.value.trim();
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailPattern.test(email)) {
-    alert('Veuillez entrer une adresse email valide.');
-    return false;
+    const formData = emailElement.closest('.formData');
+    formData.setAttribute('data-error', 'Veuillez entrer une adresse email valide.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
   }
 
-   // Vérification de la quantité saisie pour les concours
-   const quantity = document.getElementById('quantity').value.trim();
-   if (!quantity || isNaN(quantity) || quantity < 0) {
-     alert('Veuillez entrer un nombre valide pour le nombre de concours.');
-     return false;
-   }
+  // Vérification de la date de naissance (utilisateur doit avoir au moins 18 ans)
+  const birthdateValue = new Date(birthdateElement.value);
+  const today = new Date();
+  const age = today.getFullYear() - birthdateValue.getFullYear();
+  const monthDiff = today.getMonth() - birthdateValue.getMonth();
 
-   const locationChecked = document.querySelector('input[name="location"]:checked');
-    if (!locationChecked) {
-      alert('Veuillez sélectionner un tournoi.');
-      return false;
-    }
+  if (!birthdateElement.value || age < 18 || (age === 18 && monthDiff < 0)) {
+    const formData = birthdateElement.closest('.formData');
+    formData.setAttribute('data-error', 'Vous devez avoir au moins 18 ans.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
+  }
 
-    const termsAccepted = document.getElementById('checkbox1').checked;
-    if (!termsAccepted) {
-      alert('Vous devez accepter les conditions d\'utilisation.');
-      return false;
-    }
+  // Vérification de la quantité
+  const quantity = quantityElement.value.trim();
+  if (!quantity || isNaN(quantity) || quantity < 0) {
+    const formData = quantityElement.closest('.formData');
+    formData.setAttribute('data-error', 'Veuillez entrer un nombre valide pour le nombre de concours.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
+  }
 
+  // Vérification que l'utilisateur a sélectionné un tournoi
+  const locationChecked = document.querySelector('input[name="location"]:checked');
+  if (!locationChecked) {
+    const locationField = document.querySelector('input[name="location"]').closest('.formData');
+    locationField.setAttribute('data-error', 'Veuillez sélectionner un tournoi.');
+    locationField.setAttribute('data-error-visible', 'true');
+    isValid = false;
+  }
 
+  // Vérification des conditions d'utilisation
+  if (!termsElement.checked) {
+    const formData = termsElement.closest('.formData');
+    formData.setAttribute('data-error', 'Vous devez accepter les conditions d\'utilisation.');
+    formData.setAttribute('data-error-visible', 'true');
+    isValid = false;
+  }
 
-  return true; 
+  return isValid; // Empêche la soumission si des erreurs sont présentes
 }
-
