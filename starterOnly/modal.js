@@ -33,6 +33,7 @@ form.addEventListener("submit", function(event) {
 
   // ca vérifie si tous les champs sont bien remplis
   if (validate()) {
+    form.reset()
     toggleDisplay(form, false); // Cache le formulaire
     toggleDisplay(confirmationMessage, true); // Affiche le message de confirmation
   }

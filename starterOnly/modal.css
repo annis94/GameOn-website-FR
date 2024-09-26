@@ -249,11 +249,29 @@ main {
   padding-top: 10px;
 }
 
+.confirmationMessage{
+  margin: 90% auto;
+  width: 100%;
+  max-width: 20rem;
+  animation-name: modalopen;
+  animation-duration: var(--modal-duration);
+  background: #232323;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  padding-top: 10px;
+  text-align: center;
+}
+
 .modal-body {
   /* Padding et marges pour le contenu de la modal */
   padding: 15px 8%;
   margin: 15px auto;
+  
 }
+
+
 
 label {
   /* Style des labels des formulaires */
